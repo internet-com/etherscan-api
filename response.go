@@ -21,8 +21,8 @@ type Envelope struct {
 
 // AccountBalance account and its balance in pair
 type AccountBalance struct {
-	Account string  `json:"account"`
-	Balance *BigInt `json:"balance"`
+	Account string `json:"account"`
+	Balance string `json:"balance"`
 }
 
 // NormalTx holds info from normal tx query

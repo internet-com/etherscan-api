@@ -8,12 +8,11 @@
 package etherscan
 
 // AccountBalance gets ether balance for a single address
-func (c *Client) AccountBalance(address string) (balance *BigInt, err error) {
+func (c *Client) AccountBalance(address string) (balance string, err error) {
 	param := M{
 		"tag":     "latest",
 		"address": address,
 	}
-	balance = new(BigInt)
 	err = c.call("account", "balance", param, balance)
 	return
 }
@@ -22,6 +21,17 @@ func (c *Client) AccountBalance(address string) (balance *BigInt, err error) {
 func (c *Client) MultiAccountBalance(addresses ...string) (balances []AccountBalance, err error) {
 	param := M{
 		"tag":     "latest",
+		"address": addresses,
+	}
+	balances = make([]AccountBalance, 0, len(addresses))
+	err = c.call("account", "balancemulti", param, &balances)
+	return
+}
+
+// MultiAccountBalance gets ether balance for multiple addresses at specific block in a single call
+func (c *Client) MultiAccountBalanceAt(blockNo int, addresses []string) (balances []AccountBalance, err error) {
+	param := M{
+		"tag":     blockNo,
 		"address": addresses,
 	}
 	balances = make([]AccountBalance, 0, len(addresses))
@@ -120,7 +130,7 @@ func (c *Client) UnclesMinedByAddress(address string, page int, offset int) (min
 }
 
 // TokenBalance get erc20-token account balance of address for contractAddress
-func (c *Client) TokenBalance(contractAddress, address string) (balance *BigInt, err error) {
+func (c *Client) TokenBalance(contractAddress, address string) (balance string, err error) {
 	param := M{
 		"contractaddress": contractAddress,
 		"address":         address,
